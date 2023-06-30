@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <title>Books Started: Serving Web Content</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+<div>List of books</div>
+{{#authors.content}}
+    <div>
+        <a href="/authors/{{id}}">
+            <i>{{book}}</i>
+            <span>{{authorName}}</span>
+        </a>
+    </div>
+{{/authors.content}}
+<!-- Добавляем пагинацию -->
+<div class="pagination">
+    <ul>
+        {{#authors.hasPrevious}}
+            <li>
+                <a href="/authors?page={{authors.previousPageable.pageNumber}}">Previous</a>
+            </li>
+        {{/authors.hasPrevious}}
+        {{#authors.navigatepageNums}}
+            <li>
+                <a href="/authors?page={{.}}">{{.}}</a>
+            </li>
+        {{/authors.navigatepageNums}}
+        {{#authors.hasNext}}
+            <li>
+                <a href="/authors?page={{authors.nextPageable.pageNumber}}">Next</a>
+            </li>
+        {{/authors.hasNext}}
+    </ul>
+</div>
+</body>
+</html>
