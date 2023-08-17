@@ -5,22 +5,31 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Data
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 public class Author {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private  Integer id;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    private  Long id;
 
     private String book;
     private String authorName;
     private String biography;
-    private Date authorDateOfBirth;
+    private LocalDate authorDateOfBirth;
 
-    public Author() {
+    public Author( String book, String authorName, String biography, LocalDate authorDateOfBirth) {
+        this.book = book;
+        this.authorName = authorName;
+        this.biography = biography;
+        this.authorDateOfBirth = authorDateOfBirth;
     }
 }
