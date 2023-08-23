@@ -1,7 +1,10 @@
 package com.example.books.controller;
 
 import com.example.books.domain.Author;
+import com.example.books.domain.Book;
 import com.example.books.repos.AuthorRepo;
+import com.example.books.repos.BookRepo;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -12,17 +15,25 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import static com.example.books.util.DateParse.dateParse;
+import static com.example.books.util.DateParse.isDateParseable;
 
 @Controller
+@RequestMapping("/authors")
 public class AuthorController {
 
     @Autowired
     private  AuthorRepo authorRepo;
 
-    @GetMapping("/authors")
+    @Autowired
+    private BookRepo bookRepo;
+
+    @GetMapping
     public String getAuthors(
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size,
@@ -34,56 +45,75 @@ public class AuthorController {
         return "authorsPage";
     }
 
-    @GetMapping("/authors/{id}")
+    @SneakyThrows
+    @PostMapping
+    public String addAuthor(
+            @RequestParam String authorName,
+            @RequestParam String biography,
+            @RequestParam String date,
+            Model model
+    ){
+        LocalDate localDate;
+        if (isDateParseable(date)) {
+            localDate = dateParse(date);
+            Author author = new Author(authorName, biography, localDate);
+            authorRepo.save(author);
+        }
+        Pageable pageable = PageRequest.of(0, 5);
+        Page<Author> authors = authorRepo.findAll(pageable);
+
+        model.addAttribute("authors", authors);
+
+        return "authorsPage";
+    }
+    @GetMapping("/{id}")
     public String getAuthorDetails(
             @PathVariable("id") long id,
             Model model
     ) {
         Author author = authorRepo.findById(id);
+        String dateInView = author.getAuthorDateOfBirth()
+                .format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+
+        Set<Book> bookSet = bookRepo.findByAuthorId(id);
+
         model.addAttribute("author", author);
+        model.addAttribute("dateOfBirth", dateInView);
+        model.addAttribute("bookSet", bookSet);
+
+
         return "authorDetails";
     }
-    @PostMapping("/authors")
-    public String addAuthor(
+    @SneakyThrows
+    @PostMapping("/{id}")
+    String replaceAuthor(
             @RequestParam String authorName,
             @RequestParam String biography,
-            @RequestParam String book,
             @RequestParam String date,
-            Map<String, Object> model
+            @PathVariable long id,
+            Model model
     ){
-        // add try catch? use util to find if string parseable?
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate parseDate = LocalDate.parse(date, formatter);
-        Author author = new Author(authorName,biography, book, parseDate);
-        authorRepo.save(author);
+        Author updateAuthor = authorRepo.findById(id);
+        if (authorName != null && !authorName.isEmpty()){
+            updateAuthor.setAuthorName(authorName);
+        }
+        if (biography != null && !biography.isEmpty()){
+            updateAuthor.setBiography(biography);
+        }
+        LocalDate localDate;
+        if (isDateParseable(date)) {
+            localDate = dateParse(date);
+            updateAuthor.setAuthorDateOfBirth(localDate);
 
-        Pageable pageable = PageRequest.of(0, 10);
+        }
+        authorRepo.save(updateAuthor);
+        Pageable pageable = PageRequest.of(0, 5);
         Page<Author> authors = authorRepo.findAll(pageable);
 
-        model.put("authors", authors);
+        model.addAttribute("authors", authors);
 
-        return "authorsPage";
-    }
+        return "redirect:/authors/{id}";
 
-
-    @PutMapping("/author/{id}")
-    Author replaceAuthor(
-            @RequestBody Author newAuthor,
-            @PathVariable long id){
-
-        Author updateAuthor = authorRepo.findById(id);
-
-        updateAuthor.setAuthorName(newAuthor.getAuthorName());
-        updateAuthor.setAuthorDateOfBirth(newAuthor.getAuthorDateOfBirth());
-        updateAuthor.setBiography(newAuthor.getBiography());
-        updateAuthor.setBook(newAuthor.getBook());
-        return authorRepo.save(updateAuthor);
-
-    }
-
-    @DeleteMapping("/author/{id}")
-    void deleteAuthorById(@PathVariable Long id){
-        authorRepo.deleteById(id);
     }
 
 }

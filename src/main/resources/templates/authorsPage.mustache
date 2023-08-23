@@ -5,11 +5,10 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 <body>
-<div>List of books</div>
+<div>List of authors</div>
 {{#authors.content}}
     <div>
         <a href="/authors/{{id}}">
-            <i>{{book}}</i>
             <span>{{authorName}}</span>
         </a>
     </div>
@@ -20,7 +19,6 @@
     <form method="post">
         <input type="text" name="authorName"  placeholder="Name" />
         <input type="text" name="biography" placeholder="Biography" />
-        <input type="text" name="book"  placeholder="Book" />
         <input type="date" name="date"  placeholder="Date of birth" />
         <button type="submit">Submit</button>
     </form>

@@ -1,15 +1,30 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <title>Author Details</title>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Author Details</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 <body>
 <h1>Author Details</h1>
 <div>
-  <b>{{author.authorName}}</b>
-  <p>{{author.biography}}</p>
-  <p>Date of Birth: {{author.authorDateOfBirth}}</p>
+    <b>{{author.authorName}}</b>
+    <p>{{author.biography}}</p>
+    <p>Date of Birth: {{dateOfBirth}}</p>
+</div>
+
+{{#bookSet}}
+    <div>
+        <a href="/books/{{id}}"> <span>{{title}} </span></a>
+    </div>
+{{/bookSet}}
+<h1>Change info</h1>
+<div>
+    <form method="post">
+        <input type="text" name="authorName"  placeholder="Change author name" />
+        <input type="text" name="biography" placeholder="Change biography" />
+        <input type="date" name="date"  placeholder="Change date of birth" />
+        <button type="submit">Save changes</button>
+    </form>
 </div>
 </body>
 </html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <title>Books Started: Serving Web Content</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+<div>List of books</div>
+{{#books.content}}
+    <div>
+        <a href="/books/{{id}}">
+            <i>{{title}}</i>
+            <i>{{genre}}</i>
+        </a>
+    </div>
+{{/books.content}}
+
+
+<div>
+    <h3>Add new book</h3>
+    <form action="/books/" method="post">
+        <b><input type="text" name="title"  placeholder="Title" /></b>
+
+        <label for="book">Choose a genre:</label>
+        <!--or make iteration-->
+        <select name="genre" id="book">
+            <option value="HORROR">Horror</option>
+            <option value="COMEDY">Comedy</option>
+            <option value="ROMANTIC">Romantic</option>
+            <option value="ADVENTURE">Adventure</option>
+            <option value="OTHER">Other</option>
+        </select>
+
+        <input type="text" name="authorName"  placeholder="Author name" />
+
+        <button type="submit">Submit</button>
+    </form>
+
+</div>
+<div>
+    <a href="/authors"> Add author</a>
+</div>
+
+<!-- Добавляем пагинацию -->
+<div class="pagination">
+    <ul>
+        {{#books.hasPrevious}}
+            <li>
+                <a href="/books?page={{books.previousPageable.pageNumber}}">Previous</a>
+            </li>
+        {{/books.hasPrevious}}
+        {{#books.navigatepageNums}}
+            <li>
+                <a href="/books?page={{.}}">{{.}}</a>
+            </li>
+        {{/books.navigatepageNums}}
+        {{#books.hasNext}}
+            <li>
+                <a href="/books?page={{books.nextPageable.pageNumber}}">Next</a>
+            </li>
+        {{/books.hasNext}}
+    </ul>
+</div>
+</body>
+</html>

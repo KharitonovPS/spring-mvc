@@ -1,0 +1,17 @@
+package com.example.books.repos;
+
+import com.example.books.domain.Book;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.Set;
+
+@Repository
+public interface BookRepo extends JpaRepository<Book, Long> {
+
+//    Page<BookRepo> findByAuthor(Pageable pageable, @Param("author")Author author);
+
+//    Page<BookRepo>findAll(Pageable pageable, @Param("author") Author author);
+    Set<Book> findByAuthorId(long id);
+    Book findById(long id);
+}
