@@ -1,10 +1,10 @@
 package com.example.books.controller;
 
-import com.example.books.domain.Author;
 import com.example.books.domain.Book;
 import com.example.books.domain.BookGenre;
-import com.example.books.repos.AuthorRepo;
 import com.example.books.repos.BookRepo;
+import com.example.books.domain.Author;
+import com.example.books.repos.AuthorRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -13,7 +13,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/books")
@@ -34,7 +37,7 @@ public class BookController {
         Page<Book> books = bookRepo.findAll(pageable);
         model.addAttribute("books", books);
 
-        return "booksList";
+        return "booksList.html";
     }
 
     @PostMapping
@@ -42,17 +45,22 @@ public class BookController {
             @RequestParam String title,
             @RequestParam BookGenre genre,
             @RequestParam String authorName,
-            Map<String, Object> model
+            Model model
     ){
+        List<Author> list = authorRepo.findAll();
+        Set<Author> authorSet = new HashSet<>(list);
         Author author = authorRepo.findByAuthorName(authorName);
+
         Book book = new Book( title, genre, author);
         bookRepo.save(book);
 
         Pageable pageable = PageRequest.of(0, 10);
         Page<Book> books = bookRepo.findAll(pageable);
 
-        model.put("books", books);
-        return "booksList";
+        model.addAttribute("authorSet", authorSet);
+        model.addAttribute("books", books);
+
+        return "booksList.html";
     }
     @GetMapping("/{id}")
     String getDetails(

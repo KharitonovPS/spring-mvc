@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <title>Books Started: Serving Web Content</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+<table>
+    <thead>
+    <tr>
+        <th>Title</th>
+        <th>Genre</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:if="${books.empty}">
+        <td colspan="2"> No Books Available</td>
+    </tr>
+    <tr th:each="book : ${books}">
+        <td> <a th:href="@{/books/{id}(id=${book.id})}" th:text="${book.title}"> Title</a></td>
+        <td><span th:text="${book.genre}"> Genre</span></td>
+    </tr>
+    </tbody>
+</table>
+
+
+
+
+<div>
+    <h3>Add new book</h3>
+    <form  th:action="@{/books}" method="post">
+        <b><input type="text" name="title" th:value="${title}"  placeholder="Title" /></b>
+
+        <label for="bookGenre">Choose a genre:</label>
+        <select  id="bookGenre" name="genre">
+            <option th:each="genre : ${T(com.example.books.domain.BookGenre).values()}"
+                    th:value="${genre}"
+                    th:text="${genre}">Wireframe</option>
+        </select>
+
+        <label for="author">Choose author:</label>
+        <select id="author" name="authorName"  th:if="${not #lists.isEmpty(authorSet)}">
+            <option th:each="author : ${authorSet}"
+                    th:value="${author.authorName}"
+                    th:text="${author.authorName}">Wireframe</option>
+        </select>
+        <div th:if="${#lists.isEmpty(authorSet)}">
+            No authors available.
+        </div>
+        <!--        <input type="text" name="authorName" th:value="${authorName}" placeholder="Author name" />-->
+        <button type="submit">Submit</button>
+    </form>
+</div>
+<div>
+    <a th:href="@{/authors}"> Add author</a>
+</div>
+
+<!-- add pagination -->
+<div class="pagination">
+    <ul>
+        {{#books.hasPrevious}}
+        <li>
+            <a href="/com/example/books?page={{books.previousPageable.pageNumber}}">Previous</a>
+        </li>
+        {{/books.hasPrevious}}
+        {{#books.navigatepageNums}}
+        <li>
+            <a href="/com/example/books?page={{.}}">{{.}}</a>
+        </li>
+        {{/books.navigatepageNums}}
+        {{#books.hasNext}}
+        <li>
+            <a href="/com/example/books?page={{books.nextPageable.pageNumber}}">Next</a>
+        </li>
+        {{/books.hasNext}}
+    </ul>
+</div>
+</body>
+</html>

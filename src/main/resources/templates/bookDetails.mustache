@@ -36,17 +36,17 @@
         <ul>
             {{#books.hasPrevious}}
                 <li>
-                    <a href="/books?page={{books.previousPageable.pageNumber}}">Previous</a>
+                    <a href="/com/example/books?page={{books.previousPageable.pageNumber}}">Previous</a>
                 </li>
             {{/books.hasPrevious}}
             {{#books.navigatepageNums}}
                 <li>
-                    <a href="/books?page={{.}}">{{.}}</a>
+                    <a href="/com/example/books?page={{.}}">{{.}}</a>
                 </li>
             {{/books.navigatepageNums}}
             {{#books.hasNext}}
                 <li>
-                    <a href="/books?page={{books.nextPageable.pageNumber}}">Next</a>
+                    <a href="/com/example/books?page={{books.nextPageable.pageNumber}}">Next</a>
                 </li>
             {{/books.hasNext}}
         </ul>
