@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <title>Author Details</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+<h1>Author Details</h1>
+<table>
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Date of birth</th>
+        <th>List of titles</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td> <span th:text="${author.authorName}">Name</span></td>
+        <td> <span th:text="${dateOfBirth}">Date of birth</span></td>
+        <td>
+            <ul>
+                <li th:each="book : ${bookSet}">
+                    <a th:href="@{/books/{book_id}(book_id=${book.id})}" th:text="${book.title}">Title</a>
+                </li>
+            </ul>
+        </td>
+    </tr>
+    </tbody>
+</table>
+<div>
+    <h3>Biography</h3>
+    <span th:text="${author.biography}">Biography</span>
+</div>
+
+
+<h1>Change info</h1>
+<div>
+    <form th:action="@{/authors/{id}(id=${author.id})}" method="post">
+        <input type="text" name="authorName"  placeholder="Change author name" />
+        <input type="text" name="biography"   placeholder="Change biography" />
+        <input type="date" name="date"  placeholder="Change date of birth" />
+        <button type="submit">Save changes</button>
+    </form>
+</div>
+</body>
+</html>

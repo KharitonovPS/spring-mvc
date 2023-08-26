@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -33,13 +34,13 @@ public class AuthorController {
     @GetMapping
     public String getAuthors(
             @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "10") int size,
+            @RequestParam(value = "size", defaultValue = "5") int size,
             Model model) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Author> authors = authorRepo.findAll(pageable);
 
         model.addAttribute("authors", authors);
-        return "authorsPage";
+        return "authorsList.html";
     }
 
     @SneakyThrows
@@ -56,12 +57,12 @@ public class AuthorController {
             Author author = new Author(authorName, biography, localDate);
             authorRepo.save(author);
         }
-        Pageable pageable = PageRequest.of(0, 5);
+        Pageable pageable = PageRequest.of(0, 5, Sort.by("authorName"));
         Page<Author> authors = authorRepo.findAll(pageable);
 
         model.addAttribute("authors", authors);
 
-        return "authorsPage";
+        return "authorsList.html";
     }
     @GetMapping("/{id}")
     public String getAuthorDetails(
@@ -79,7 +80,7 @@ public class AuthorController {
         model.addAttribute("bookSet", bookSet);
 
 
-        return "authorDetails";
+        return "authorDetails.html";
     }
     @SneakyThrows
     @PostMapping("/{id}")
@@ -101,7 +102,6 @@ public class AuthorController {
         if (isDateParseable(date)) {
             localDate = dateParse(date);
             updateAuthor.setAuthorDateOfBirth(localDate);
-
         }
         authorRepo.save(updateAuthor);
         Pageable pageable = PageRequest.of(0, 5);

@@ -14,7 +14,7 @@ import java.util.Set;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-public class Author {
+public class Author implements Comparable<Author>{
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private  Long id;
@@ -39,5 +39,10 @@ public class Author {
         this.authorName = authorName;
         this.biography = biography;
         this.authorDateOfBirth = authorDateOfBirth;
+    }
+
+    @Override
+    public int compareTo(Author author) {
+        return this.authorName.compareTo( author.authorName);
     }
 }

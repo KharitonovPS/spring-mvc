@@ -13,19 +13,15 @@
     </tr>
     </thead>
     <tbody>
-    <tr th:if="${books.empty}">
+    <tr th:if="${#lists.isEmpty(books)}">
         <td colspan="2"> No Books Available</td>
     </tr>
     <tr th:each="book : ${books}">
         <td> <a th:href="@{/books/{id}(id=${book.id})}" th:text="${book.title}"> Title</a></td>
-        <td><span th:text="${book.genre}"> Genre</span></td>
+        <td><span th:text="${book.genre}">Genre</span></td>
     </tr>
     </tbody>
 </table>
-
-
-
-
 <div>
     <h3>Add new book</h3>
     <form  th:action="@{/books}" method="post">
@@ -39,40 +35,33 @@
         </select>
 
         <label for="author">Choose author:</label>
-        <select id="author" name="authorName"  th:if="${not #lists.isEmpty(authorSet)}">
+        <select id="author" name="authorName"  th:unless="${#lists.isEmpty(authorSet)}">
             <option th:each="author : ${authorSet}"
                     th:value="${author.authorName}"
-                    th:text="${author.authorName}">Wireframe</option>
+                    th:text="${author.authorName}">
+                Wireframe</option>
         </select>
         <div th:if="${#lists.isEmpty(authorSet)}">
             No authors available.
         </div>
-        <!--        <input type="text" name="authorName" th:value="${authorName}" placeholder="Author name" />-->
         <button type="submit">Submit</button>
     </form>
 </div>
 <div>
-    <a th:href="@{/authors}"> Add author</a>
+    <button type="submit"> <a th:href="@{/authors}"> Add new author</a></button>
 </div>
-
-<!-- add pagination -->
 <div class="pagination">
     <ul>
-        {{#books.hasPrevious}}
-        <li>
-            <a href="/com/example/books?page={{books.previousPageable.pageNumber}}">Previous</a>
-        </li>
-        {{/books.hasPrevious}}
-        {{#books.navigatepageNums}}
-        <li>
-            <a href="/com/example/books?page={{.}}">{{.}}</a>
-        </li>
-        {{/books.navigatepageNums}}
-        {{#books.hasNext}}
-        <li>
-            <a href="/com/example/books?page={{books.nextPageable.pageNumber}}">Next</a>
-        </li>
-        {{/books.hasNext}}
+        <div th:if="${books.hasPrevious}">
+            <li>
+                <a th:href="@{/books(size=${size},page=${books.previousPageable.pageNumber})}">Previous</a>
+            </li>
+        </div>
+                <div th:if="${books.hasNext}">
+            <li>
+                <a th:href="@{/books(size=${size},page=${books.nextPageable.pageNumber})}">Next</a>
+            </li>
+        </div>
     </ul>
 </div>
 </body>
