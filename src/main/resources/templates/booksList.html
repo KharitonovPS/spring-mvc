@@ -1,68 +1,79 @@
 <!DOCTYPE html>
-<html lang="ru">
-<head>
-    <title>Books Started: Serving Web Content</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-</head>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<div th:replace="~{common/fragments :: header}"></div>
 <body>
-<table>
-    <thead>
+<div class="container">
+    <div th:replace="~{common/fragments :: menu}"></div>
+</div>
+<div class="container">
+    <table class="table table-hover table-sm">
+    <thead class="thead-dark">
     <tr>
-        <th>Title</th>
-        <th>Genre</th>
+        <th scope="col">Title</th>
+        <th scope="col">Genre</th>
     </tr>
     </thead>
     <tbody>
     <tr th:if="${#lists.isEmpty(books)}">
         <td colspan="2"> No Books Available</td>
     </tr>
-    <tr th:each="book : ${books}">
+    <tr  th:each="book : ${books}">
         <td> <a th:href="@{/books/{id}(id=${book.id})}" th:text="${book.title}"> Title</a></td>
         <td><span th:text="${book.genre}">Genre</span></td>
     </tr>
     </tbody>
 </table>
-<div>
-    <h3>Add new book</h3>
+</div>
+<div class="container">
+    <div class="mx-auto mb-4" style="width: 200px;"><b>Add new book</b></div>
     <form  th:action="@{/books}" method="post">
-        <b><input type="text" name="title" th:value="${title}"  placeholder="Title" /></b>
-
-        <label for="bookGenre">Choose a genre:</label>
-        <select  id="bookGenre" name="genre">
-            <option th:each="genre : ${T(com.example.books.domain.BookGenre).values()}"
-                    th:value="${genre}"
-                    th:text="${genre}">Wireframe</option>
-        </select>
-
-        <label for="author">Choose author:</label>
-        <select id="author" name="authorName"  th:unless="${#lists.isEmpty(authorSet)}">
-            <option th:each="author : ${authorSet}"
-                    th:value="${author.authorName}"
-                    th:text="${author.authorName}">
-                Wireframe</option>
-        </select>
-        <div th:if="${#lists.isEmpty(authorSet)}">
-            No authors available.
+        <div class="row">
+            <div class="col-auto">
+                <label for="title">Please write the title of book</label>
+                <input class="form-control" type="text" id="title" th:value="${title}"  placeholder="Title" />
+            </div>
+            <div class="col-auto">
+                <label for="bookGenre">Choose a genre:</label>
+                <select  class="form-control" id="bookGenre" name="genre">
+                    <option th:each="genre : ${T(com.example.books.domain.BookGenre).values()}"
+                            th:value="${genre}"
+                            th:text="${genre}">Wireframe</option>
+                </select>
+            </div>
+            <div class="col-auto">
+                <label for="author">Choose author:</label>
+                <select class="form-control" id="author" name="authorName"  th:unless="${#lists.isEmpty(authorSet)}">
+                    <option th:each="author : ${authorSet}"
+                            th:value="${author.authorName}"
+                            th:text="${author.authorName}">
+                        Wireframe</option>
+                </select>
+                <div th:if="${#lists.isEmpty(authorSet)}">
+                    No authors available.
+                </div>
+            </div>
         </div>
-        <button type="submit">Submit</button>
+        <div class="row">
+            <div class="col">
+                <button type="submit" class="btn btn-primary mt-2 mb-2">Submit</button>
+            </div>
+            <div class="col">
+                <a class="btn btn-primary mt-2 mb-2" th:href="@{/authors}" role="button"> Add new author</a>
+            </div>
+        </div>
     </form>
 </div>
-<div>
-    <button type="submit"> <a th:href="@{/authors}"> Add new author</a></button>
-</div>
-<div class="pagination">
-    <ul>
-        <div th:if="${books.hasPrevious}">
-            <li>
-                <a th:href="@{/books(size=${size},page=${books.previousPageable.pageNumber})}">Previous</a>
-            </li>
+
+<div class="pagination container mx-auto mb-4" style="width: 200px;">
+    <div class="row">
+        <div class="col" th:if="${books.hasPrevious}">
+            <a th:href="@{/books(size=${size},page=${books.previousPageable.pageNumber})}">Previous</a>
         </div>
-                <div th:if="${books.hasNext}">
-            <li>
-                <a th:href="@{/books(size=${size},page=${books.nextPageable.pageNumber})}">Next</a>
-            </li>
+        <div class="col" th:if="${books.hasNext}">
+            <a th:href="@{/books(size=${size},page=${books.nextPageable.pageNumber})}">Next</a>
         </div>
-    </ul>
+    </div>
+    <div th:replace="~{common/fragments :: footer}"></div>
 </div>
 </body>
 </html>
