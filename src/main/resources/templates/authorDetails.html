@@ -5,44 +5,63 @@
 <div class="container">
     <div th:replace="~{common/fragments :: menu}"></div>
 </div>
-<h1>Author Details</h1>
-<table>
-    <thead>
-    <tr>
-        <th>Name</th>
-        <th>Date of birth</th>
-        <th>List of titles</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-        <td> <span th:text="${author.authorName}">Name</span></td>
-        <td> <span th:text="${dateOfBirth}">Date of birth</span></td>
-        <td>
-            <ul>
-                <li th:each="book : ${bookSet}">
-                    <a th:href="@{/books/{book_id}(book_id=${book.id})}" th:text="${book.title}">Title</a>
-                </li>
-            </ul>
-        </td>
-    </tr>
-    </tbody>
-</table>
-<div>
-    <h3>Biography</h3>
-    <span th:text="${author.biography}">Biography</span>
+<div class="container">
+    <div class="mx-auto mb-4" style="width: 200px;">
+        <b>Author Details</b>
+    </div>
+    <table class="table table-hover table-sm">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Date of birth</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td> <span th:text="${author.authorName}">Name</span></td>
+            <td> <span th:text="${dateOfBirth}">Date of birth</span></td>
+        </tr>
+        <tr>
+            <td>
+                <ul>
+                    <li th:each="book : ${bookSet}">
+                        <a th:href="@{/books/{book_id}(book_id=${book.id})}" th:text="${book.title}">Title</a>
+                    </li>
+                </ul>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="mx-auto mb-4" style="width: 200px;">
+        <b>Biography</b>
+    </div>
+    <div>
+        <p class="text-justify" th:text="${author.biography}">Biography</p>
+    </div>
+    <div class="container">
+        <div class="mx-auto mb-4" style="width: 200px;"><b>Change info</b></div>
+        <form th:action="@{/authors/{id}(id=${author.id})}" method="post">
+            <div class="row">
+                <div class="col-auto">
+                    <label for="authorName">Change author name</label>
+                    <input type="text" id="authorName" name="authorName" th:value="${authorName}" placeholder="Name" />
+                </div>
+                <div class="col-auto">
+                    <label for="date">Change date of birth</label>
+                    <input type="date" id="date" name="date" th:value="${date}" placeholder="Date of birth" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="biography">Change biography of the Author</label>
+                <textarea  class="form-control" id="biography" name="biography" th:value="${biography}" rows="3"></textarea>
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-outline-primary btn-sm mt-2 mb-2">Save changes</button>
+            </div>
+        </form>
+    </div>
+    <div th:replace="~{common/fragments :: footer}"></div>
 </div>
 
-
-<h1>Change info</h1>
-<div>
-    <form th:action="@{/authors/{id}(id=${author.id})}" method="post">
-        <input type="text" name="authorName"  placeholder="Change author name" />
-        <input type="text" name="biography"   placeholder="Change biography" />
-        <input type="date" name="date"  placeholder="Change date of birth" />
-        <button type="submit">Save changes</button>
-    </form>
-</div>
-<div th:replace="~{common/fragments :: footer}"></div>
 </body>
 </html>

@@ -6,42 +6,63 @@
 <div class="container">
     <div th:replace="~{common/fragments :: menu}"></div>
 </div>
-<h1>Details</h1>
-<table>
-    <thead>
+<div class="container">
+
+
+    <div class="mx-auto mb-4" style="width: 200px;">
+        <b>Book details</b>
+    </div>
+    <table class="table table-hover table-sm">
+        <thead class="thead-dark">
         <tr>
-            <th>Title</th>
-            <th>Genre</th>
-            <th>Author</th>
+            <th scope="col">Title</th>
+            <th scope="col">Genre</th>
+            <th scope="col">Author</th>
         </tr>
-    </thead>
-    <tbody>
-    <tr>
-        <td> <span th:text="${book.title}">Title</span></td>
-        <td> <span th:text="${book.genre}">Genre</span></td>
-        <td> <a th:href="@{/authors/{author_id}(author_id=${author_id})}" th:text="${authorName}"></a> </td>
-    </tr>
-    </tbody>
-</table>
-<h3>Change info</h3>
-<div>
-    <form th:action="@{/books/{id}(id=${book.id})}" method="post">
-        <input type="text" name="title" th:value="${title}" placeholder="Title" />
-        <label for="bookGenre">Choose a genre:</label>
-        <select  id="bookGenre" name="genre">
-            <option th:each="genre : ${T(com.example.books.domain.BookGenre).values()}"
-                    th:value="${genre}"
-                    th:text="${genre}">Wireframe</option>
-        </select>
-        <label for="authorName">Choose author:</label>
-        <select id="authorName" name="authorName"  th:unless="${#lists.isEmpty(authorSet)}">
-            <option th:each="author : ${authorSet}"
-                    th:value="${author.authorName}"
-                    th:text="${author.authorName}">
-                Wireframe</option>
-        </select>
-        <button type="submit">Save changes</button>
-    </form>
+        </thead>
+        <tbody>
+        <tr>
+            <td> <span th:text="${book.title}">Title</span></td>
+            <td> <span th:text="${book.genre}">Genre</span></td>
+            <td> <a th:href="@{/authors/{author_id}(author_id=${author_id})}" th:text="${authorName}"></a> </td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="mx-auto mb-4" style="width: 200px;">
+        <b>Change data</b>
+    </div>
+    <div>
+        <form th:action="@{/books/{id}(id=${book.id})}" method="post">
+            <div class="row">
+                <div class="col-auto">
+                    <label for="title">Change title</label>
+                    <input type="text" name="title" id="title" th:value="${title}" placeholder="Title" />
+                </div>
+                <div class="col-auto">
+                    <label for="bookGenre">Choose a genre:</label>
+                    <select  id="bookGenre" name="genre">
+                        <option th:each="genre : ${T(com.example.books.domain.BookGenre).values()}"
+                                th:value="${genre}"
+                                th:text="${genre}">Wireframe</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-auto mt-3">
+                    <label for="authorName">Choose author:</label>
+                    <select id="authorName" name="authorName"  th:unless="${#lists.isEmpty(authorSet)}">
+                        <option th:each="author : ${authorSet}"
+                                th:value="${author.authorName}"
+                                th:text="${author.authorName}">
+                            Wireframe</option>
+                    </select>
+                </div>
+                <div class="col-auto">
+                    <button class="btn btn-outline-primary btn-sm mt-2 mb-2" type="submit">Save changes</button>
+                </div>
+            </div>
+        </form>
+    </div>
     <div th:replace="~{common/fragments :: footer}"></div>
 </div>
 </body>

@@ -6,47 +6,57 @@
 <div class="container">
     <div th:replace="~{common/fragments :: menu}"></div>
 </div>
-<table>
-    <thead>
-    <tr>
-        <th>Author Name</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:if="${#lists.isEmpty(authors)}">
-        <td colspan="2"> No authors Available</td>
-    </tr>
-    <tr th:each="author : ${authors}">
-        <td> <a th:href="@{/authors/{id}(id=${author.id})}" th:text="${author.authorName}"> Title</a></td>
-    </tr>
-    </tbody>
-</table>
+<div class="container">
+    <table class="table table-hover table-sm">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col">Author Name</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:if="${#lists.isEmpty(authors)}">
+            <td colspan="2"> No authors Available</td>
+        </tr>
+        <tr th:each="author : ${authors}">
+            <td> <a th:href="@{/authors/{id}(id=${author.id})}" th:text="${author.authorName}"> Title</a></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<div class="pagination container mx-auto mb-4" style="width: 200px;">
+    <div class="row">
+        <div class="col" th:if="${authors.hasPrevious}">
+            <a th:href="@{/authors(size=${size},page=${authors.previousPageable.pageNumber})}">Previous</a>
+        </div>
+        <div class="col" th:if="${authors.hasNext}">
+            <a th:href="@{/authors(size=${size},page=${authors.nextPageable.pageNumber})}">Next</a>
+        </div>
+    </div>
+</div>
 
-<div>
-    <h3>Add new Author</h3>
+<div class="container">
+    <div class="mx-auto mb-4" style="width: 200px;"><b>Add new Author</b></div>
     <form th:action="@{/authors}" method="post">
-
-        <input type="text" name="authorName" th:value="${authorName}" placeholder="Name" />
-        <input type="text" name="biography" th:value="${biography}" placeholder="Biography" />
-        <input type="text" name="date" th:value="${date}" placeholder="Date of birth" />
-        <button type="submit">Submit</button>
+        <div class="row">
+            <div class="col-auto">
+                <label for="authorName">Name / Alias of the Author</label>
+                <input type="text" id="authorName" name="authorName" th:value="${authorName}" placeholder="Name" />
+            </div>
+            <div class="col-auto">
+                <label for="date">Date when author was born</label>
+                <input type="date" id="date" name="date" th:value="${date}" placeholder="Date of birth" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label  for="biography">Biography of the Author</label>
+            <textarea  class="form-control" id="biography" name="biography" th:value="${biography}" rows="3"></textarea>
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-outline-primary btn-sm mt-2 mb-2">Submit</button>
+        </div>
     </form>
 </div>
-<div class="pagination">
-    <ul>
-        <div th:if="${authors.hasPrevious}">
-            <li>
-                <a th:href="@{/authors(size=${size},page=${authors.previousPageable.pageNumber})}">Previous</a>
-            </li>
-        </div>
-        <div th:if="${authors.hasNext}">
-            <li>
-                <a th:href="@{/authors(size=${size},page=${authors.nextPageable.pageNumber})}">Next</a>
-            </li>
-        </div>
-    </ul>
-</div>
-</div>
+
 <div th:replace="~{common/fragments :: footer}"></div>
 </body>
 </html>

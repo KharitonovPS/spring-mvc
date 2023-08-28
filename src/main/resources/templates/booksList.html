@@ -24,13 +24,24 @@
     </tbody>
 </table>
 </div>
+<div class="pagination container mx-auto mb-4" style="width: 200px;">
+    <div class="row">
+        <div class="col" th:if="${books.hasPrevious}">
+            <a th:href="@{/books(size=${size},page=${books.previousPageable.pageNumber})}">Previous</a>
+        </div>
+        <div class="col" th:if="${books.hasNext}">
+            <a th:href="@{/books(size=${size},page=${books.nextPageable.pageNumber})}">Next</a>
+        </div>
+    </div>
+    <div th:replace="~{common/fragments :: footer}"></div>
+</div>
 <div class="container">
     <div class="mx-auto mb-4" style="width: 200px;"><b>Add new book</b></div>
     <form  th:action="@{/books}" method="post">
         <div class="row">
             <div class="col-auto">
                 <label for="title">Please write the title of book</label>
-                <input class="form-control" type="text" id="title" th:value="${title}"  placeholder="Title" />
+                <input class="form-control" type="text" id="title" name="title" th:value="${title}"  placeholder="Title" />
             </div>
             <div class="col-auto">
                 <label for="bookGenre">Choose a genre:</label>
@@ -55,25 +66,15 @@
         </div>
         <div class="row">
             <div class="col">
-                <button type="submit" class="btn btn-primary mt-2 mb-2">Submit</button>
+                <button type="submit" class="btn btn-outline-primary btn-sm mt-2 mb-2">Submit</button>
             </div>
             <div class="col">
-                <a class="btn btn-primary mt-2 mb-2" th:href="@{/authors}" role="button"> Add new author</a>
+                <a class="btn btn-outline-primary btn-sm mt-2 mb-2" th:href="@{/authors}" role="button"> Add new author</a>
             </div>
         </div>
     </form>
 </div>
 
-<div class="pagination container mx-auto mb-4" style="width: 200px;">
-    <div class="row">
-        <div class="col" th:if="${books.hasPrevious}">
-            <a th:href="@{/books(size=${size},page=${books.previousPageable.pageNumber})}">Previous</a>
-        </div>
-        <div class="col" th:if="${books.hasNext}">
-            <a th:href="@{/books(size=${size},page=${books.nextPageable.pageNumber})}">Next</a>
-        </div>
-    </div>
-    <div th:replace="~{common/fragments :: footer}"></div>
-</div>
+
 </body>
 </html>
