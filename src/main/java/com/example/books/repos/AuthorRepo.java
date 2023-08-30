@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.TreeSet;
 
 
 @Repository
@@ -13,7 +14,4 @@ public interface AuthorRepo extends JpaRepository<Author, Long> {
     Author findByAuthorName(String author);
 
     Author  findById(long id);
-
-    List<Author> findAll();
-
 }

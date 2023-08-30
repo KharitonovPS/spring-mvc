@@ -9,9 +9,7 @@ import java.util.Set;
 @Repository
 public interface BookRepo extends JpaRepository<Book, Long> {
 
-//    Page<BookRepo> findByAuthor(Pageable pageable, @Param("author")Author author);
 
-//    Page<BookRepo>findAll(Pageable pageable, @Param("author") Author author);
     Set<Book> findByAuthorId(long id);
     Book findById(long id);
 }

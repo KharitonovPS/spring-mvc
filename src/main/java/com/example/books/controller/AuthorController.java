@@ -18,8 +18,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Set;
 
-import static com.example.books.service.DateParse.dateParse;
-import static com.example.books.service.DateParse.isDateParseable;
+import static com.example.books.service.util.DateParse.dateParse;
+import static com.example.books.service.util.DateParse.isDateParseable;
 
 @Controller
 @RequestMapping("/authors")
@@ -78,7 +78,6 @@ public class AuthorController {
         model.addAttribute("author", author);
         model.addAttribute("dateOfBirth", dateInView);
         model.addAttribute("bookSet", bookSet);
-
 
         return "authorDetails.html";
     }

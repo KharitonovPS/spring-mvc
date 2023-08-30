@@ -15,11 +15,11 @@
     </thead>
     <tbody>
     <tr th:if="${#lists.isEmpty(books)}">
-        <td colspan="2"> No Books Available</td>
+        <td colspan="2"> No data Available</td>
     </tr>
-    <tr  th:each="book : ${books}">
-        <td> <a th:href="@{/books/{id}(id=${book.id})}" th:text="${book.title}"> Title</a></td>
-        <td><span th:text="${book.genre}">Genre</span></td>
+    <tr  th:each="bookDTO : ${books}">
+        <td> <a th:href="@{/books/{id}(id=${bookDTO.id})}" th:text="${bookDTO.title}"> Title</a></td>
+        <td><span th:text="${bookDTO.genre}">Genre</span></td>
     </tr>
     </tbody>
 </table>
@@ -33,7 +33,7 @@
             <a th:href="@{/books(size=${size},page=${books.nextPageable.pageNumber})}">Next</a>
         </div>
     </div>
-    <div th:replace="~{common/fragments :: footer}"></div>
+
 </div>
 <div class="container">
     <div class="mx-auto mb-4" style="width: 200px;"><b>Add new book</b></div>
@@ -52,11 +52,11 @@
                 </select>
             </div>
             <div class="col-auto">
-                <label for="author">Choose author:</label>
-                <select class="form-control" id="author" name="authorName"  th:unless="${#lists.isEmpty(authorSet)}">
-                    <option th:each="author : ${authorSet}"
-                            th:value="${author.authorName}"
-                            th:text="${author.authorName}">
+                <label for="authorName">Choose author:</label>
+                <select class="form-control" id="authorName" name="authorName"  th:unless="${#lists.isEmpty(authorSet)}">
+                    <option th:each="authorName : ${authorSet}"
+                            th:value="${authorName}"
+                            th:text="${authorName}">
                         Wireframe</option>
                 </select>
                 <div th:if="${#lists.isEmpty(authorSet)}">
@@ -74,6 +74,7 @@
         </div>
     </form>
 </div>
+<div th:replace="~{common/fragments :: footer}"></div>
 
 
 </body>

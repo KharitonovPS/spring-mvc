@@ -51,9 +51,9 @@
                 <div class="col-auto mt-3">
                     <label for="authorName">Choose author:</label>
                     <select id="authorName" name="authorName"  th:unless="${#lists.isEmpty(authorSet)}">
-                        <option th:each="author : ${authorSet}"
-                                th:value="${author.authorName}"
-                                th:text="${author.authorName}">
+                        <option th:each="authorName : ${authorSet}"
+                                th:value="${authorName}"
+                                th:text="${authorName}">
                             Wireframe</option>
                     </select>
                 </div>

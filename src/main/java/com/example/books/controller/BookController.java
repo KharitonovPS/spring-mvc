@@ -3,13 +3,14 @@ package com.example.books.controller;
 import com.example.books.domain.Author;
 import com.example.books.domain.Book;
 import com.example.books.domain.BookGenre;
+import com.example.books.domain.dto.BookDTO;
 import com.example.books.repos.AuthorRepo;
 import com.example.books.repos.BookRepo;
+import com.example.books.service.AuthorService;
+import com.example.books.service.BookService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -17,24 +18,28 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 
 @Controller
+@AllArgsConstructor
 @RequestMapping("/books")
 public class BookController {
 
     @Autowired
-    BookRepo bookRepo;
-
+    private final BookService bookService;
     @Autowired
-    AuthorRepo authorRepo;
+    private final BookRepo bookRepo;
+    @Autowired
+    private final AuthorRepo authorRepo;
+    @Autowired
+    private final AuthorService authorService;
+
     @GetMapping
     String listBooks(
             @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "5") int size,
+            @RequestParam(value = "size", defaultValue = "10") int size,
             Model model
     ) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("title"));
-        Page<Book> books = bookRepo.findAll(pageable);
-        List<Author> list = authorRepo.findAll();
-        TreeSet<Author> authorSet = new TreeSet<>(list);
+        Page<BookDTO> books = bookService.findAllPages(pageable);
+        TreeSet<String> authorSet = authorService.getAuthorsNames();
 
         model.addAttribute("books", books);
         model.addAttribute("authorSet", authorSet);
@@ -52,30 +57,25 @@ public class BookController {
         Author author = authorRepo.findByAuthorName(authorName);
         Book book = new Book( title, genre, author);
         bookRepo.save(book);
-        Pageable pageable = PageRequest.of(0, 5);
-        Page<Book> books = bookRepo.findAll(pageable);
+        model.addAttribute(book);
 
-        model.addAttribute("books", books);
-
-        return "booksList.html";
+        return "redirect:/books";
     }
     @GetMapping("/{id}")
     String getDetails(
             @PathVariable ("id") long id,
-            @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "5") int size,
             Model model
     ){
-        Book book = bookRepo.findById(id);
-        String authorName = book.getAuthorName();
-        model.addAttribute(book);
-        long authorId = book.getAuthor().getId();
-        List<Author> list = authorRepo.findAll();
-        TreeSet<Author> authorSet = new TreeSet<>(list);
+        BookDTO bookDTO = bookService.findById(id);
+        String authorName = bookDTO.getAuthorName();
 
+        Long authorId = authorService.findAuthorIdByName(authorName);
+        TreeSet<String> authorSet = authorService.getAuthorsNames();
+
+        model.addAttribute("book", bookDTO);
         model.addAttribute("authorName", authorName);
-        model.addAttribute("authorSet", authorSet);
         model.addAttribute("author_id", authorId);
+        model.addAttribute("authorSet", authorSet);
 
         return "bookDetails.html";
     }
