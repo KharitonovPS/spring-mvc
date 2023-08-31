@@ -3,18 +3,27 @@ package com.example.books.service;
 import com.example.books.domain.Book;
 import com.example.books.domain.dto.BookDTO;
 import org.springframework.stereotype.Service;
-
-import java.util.function.Function;
-//magic do not touch
 @Service
-public class BookDTOMapper implements Function<Book, BookDTO> {
-    @Override
+public class BookDTOMapper  {
 
-    public BookDTO apply(Book book) {
+    private final AuthorDTOMapper authorDTOMapper;
+
+    public BookDTOMapper(AuthorDTOMapper authorDTOMapper) {
+        this.authorDTOMapper = authorDTOMapper;
+    }
+
+    public BookDTO toDTO(Book book) {
         return new BookDTO(
                 book.getId(),
                 book.getTitle(),
                 book.getGenre(),
-                book.getAuthor().getAuthorName());
+                authorDTOMapper.toDto(book.getAuthor()));
+    }
+    public Book toBook(BookDTO bookDTO){
+        return new Book(
+                bookDTO.getId(),
+                bookDTO.getTitle(),
+                bookDTO.getGenre(),
+                authorDTOMapper.toAuthor(bookDTO.getAuthorDTO()));
     }
 }

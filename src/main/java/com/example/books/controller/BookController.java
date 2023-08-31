@@ -4,31 +4,26 @@ import com.example.books.domain.Author;
 import com.example.books.domain.Book;
 import com.example.books.domain.BookGenre;
 import com.example.books.domain.dto.BookDTO;
-import com.example.books.repos.AuthorRepo;
-import com.example.books.repos.BookRepo;
 import com.example.books.service.AuthorService;
 import com.example.books.service.BookService;
-import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.*;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.List;
+import java.util.TreeSet;
 
 @Controller
-@AllArgsConstructor
+@RequiredArgsConstructor
 @RequestMapping("/books")
 public class BookController {
 
-    @Autowired
     private final BookService bookService;
-    @Autowired
-    private final BookRepo bookRepo;
-    @Autowired
-    private final AuthorRepo authorRepo;
-    @Autowired
     private final AuthorService authorService;
 
     @GetMapping
@@ -53,19 +48,20 @@ public class BookController {
             @RequestParam BookGenre genre,
             @RequestParam String authorName,
             Model model
-    ){
+    ) {
         Author author = authorRepo.findByAuthorName(authorName);
-        Book book = new Book( title, genre, author);
+        Book book = new Book(title, genre, author);
         bookRepo.save(book);
         model.addAttribute(book);
 
         return "redirect:/books";
     }
+
     @GetMapping("/{id}")
     String getDetails(
-            @PathVariable ("id") long id,
+            @PathVariable("id") long id,
             Model model
-    ){
+    ) {
         BookDTO bookDTO = bookService.findById(id);
         String authorName = bookDTO.getAuthorName();
 
@@ -80,22 +76,22 @@ public class BookController {
         return "bookDetails.html";
     }
 
-    @PostMapping ("/{id}")
+    @PostMapping("/{id}")
     String changeBook(
-            @RequestParam ("title") String title,
-            @RequestParam ("genre") BookGenre genre,
-            @RequestParam ("authorName") String authorName,
-            @PathVariable ("id") long id,
+            @RequestParam("title") String title,
+            @RequestParam("genre") BookGenre genre,
+            @RequestParam("authorName") String authorName,
+            @PathVariable("id") long id,
             Model model
-    ){
+    ) {
         Book updeateBook = bookRepo.findById(id);
-        if(title != null && !title.isEmpty()){
+        if (title != null && !title.isEmpty()) {
             updeateBook.setTitle(title);
         }
-        if (genre !=null && !genre.toString().isEmpty()){
+        if (genre != null && !genre.toString().isEmpty()) {
             updeateBook.setGenre(genre);
         }
-        if (authorName !=null && !authorName.isEmpty()){
+        if (authorName != null && !authorName.isEmpty()) {
             updeateBook.setAuthor(authorRepo.findByAuthorName(authorName));
         }
         bookRepo.save(updeateBook);

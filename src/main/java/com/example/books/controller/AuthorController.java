@@ -2,10 +2,11 @@ package com.example.books.controller;
 
 import com.example.books.domain.Author;
 import com.example.books.domain.Book;
-import com.example.books.repos.AuthorRepo;
-import com.example.books.repos.BookRepo;
+import com.example.books.domain.dto.AuthorDTO;
+import com.example.books.service.AuthorService;
+import com.example.books.service.BookService;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -18,26 +19,24 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Set;
 
-import static com.example.books.service.util.DateParse.dateParse;
-import static com.example.books.service.util.DateParse.isDateParseable;
+import static com.example.books.util.DateParse.dateParse;
+import static com.example.books.util.DateParse.isDateParseable;
 
 @Controller
+@RequiredArgsConstructor
 @RequestMapping("/authors")
 public class AuthorController {
 
-    @Autowired
-    private  AuthorRepo authorRepo;
-
-    @Autowired
-    private BookRepo bookRepo;
+    private final AuthorService authorService;
+    private final BookService bookService;
 
     @GetMapping
     public String getAuthors(
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "5") int size,
             Model model) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<Author> authors = authorRepo.findAll(pageable);
+
+        Page<AuthorDTO> authors = authorService.getAuthorPages(page, size);
 
         model.addAttribute("authors", authors);
         return "authorsList.html";

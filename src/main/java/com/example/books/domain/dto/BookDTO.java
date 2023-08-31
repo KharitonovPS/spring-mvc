@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
 
-
 @Getter
 @AllArgsConstructor
 @ToString
@@ -13,5 +12,5 @@ public class BookDTO{
     private Long id;
     private String title;
     private BookGenre genre;
-    private String authorName;
+    private AuthorDTO authorDTO;
 }

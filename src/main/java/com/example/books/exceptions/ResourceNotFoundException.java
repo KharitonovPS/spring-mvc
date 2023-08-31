@@ -1,6 +1,4 @@
-package com.example.books.Exceptions;
-
-import org.springframework.data.crossstore.ChangeSetPersister;
+package com.example.books.exceptions;
 
 public class ResourceNotFoundException extends RuntimeException {
 

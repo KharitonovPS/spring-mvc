@@ -1,8 +1,7 @@
 package com.example.books.service;
 
-import com.example.books.Exceptions.ResourceNotFoundException;
+import com.example.books.exceptions.ResourceNotFoundException;
 import com.example.books.domain.dto.BookDTO;
-import com.example.books.repos.AuthorRepo;
 import com.example.books.repos.BookRepo;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
