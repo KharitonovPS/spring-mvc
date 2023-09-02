@@ -15,5 +15,5 @@ public class AuthorDTO {
     private String authorName;
     private String biography;
     private LocalDate authorDateOfBirth;
-    private Set<BookDTO> bookDTOSet;
+//    private Set<BookDTO> bookDTOSet;
 }

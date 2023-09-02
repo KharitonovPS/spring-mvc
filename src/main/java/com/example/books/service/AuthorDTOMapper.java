@@ -2,6 +2,7 @@ package com.example.books.service;
 
 import com.example.books.domain.Author;
 import com.example.books.domain.dto.AuthorDTO;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.stream.Collectors;
@@ -11,7 +12,7 @@ public class AuthorDTOMapper {
 
     private final BookDTOMapper bookDTOMapper;
 
-    public AuthorDTOMapper(BookDTOMapper bookDTOMapper) {
+    public AuthorDTOMapper(@Lazy BookDTOMapper bookDTOMapper) {
         this.bookDTOMapper = bookDTOMapper;
     }
 
@@ -20,11 +21,11 @@ public class AuthorDTOMapper {
                 author.getId(),
                 author.getAuthorName(),
                 author.getBiography(),
-                author.getAuthorDateOfBirth(),
+                author.getAuthorDateOfBirth()/*,
                 author.getBooks()
                         .stream()
                         .map(bookDTOMapper::toDTO)
-                        .collect(Collectors.toSet()));
+                        .collect(Collectors.toSet())*/);
     }
 
     public Author toAuthor(AuthorDTO authorDTO) {
@@ -32,10 +33,7 @@ public class AuthorDTOMapper {
                 authorDTO.getId(),
                 authorDTO.getAuthorName(),
                 authorDTO.getBiography(),
-                authorDTO.getAuthorDateOfBirth(),
-                authorDTO.getBookDTOSet()
-                        .stream()
-                        .map(bookDTOMapper::toBook)
-                        .collect(Collectors.toSet()));
+                authorDTO.getAuthorDateOfBirth()
+                );
     }
 }

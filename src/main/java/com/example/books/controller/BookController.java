@@ -1,6 +1,5 @@
 package com.example.books.controller;
 
-import com.example.books.domain.Author;
 import com.example.books.domain.Book;
 import com.example.books.domain.BookGenre;
 import com.example.books.domain.dto.BookDTO;
@@ -8,9 +7,6 @@ import com.example.books.service.AuthorService;
 import com.example.books.service.BookService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -27,13 +23,12 @@ public class BookController {
     private final AuthorService authorService;
 
     @GetMapping
-    String listBooks(
+    String getBooks(
             @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "10") int size,
+            @RequestParam(value = "size", defaultValue = "5") int size,
             Model model
     ) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("title"));
-        Page<BookDTO> books = bookService.findAllPages(pageable);
+        Page<BookDTO> books = bookService.getBookPages(page, size, "Title");
         TreeSet<String> authorSet = authorService.getAuthorsNames();
 
         model.addAttribute("books", books);
@@ -49,12 +44,11 @@ public class BookController {
             @RequestParam String authorName,
             Model model
     ) {
-        Author author = authorRepo.findByAuthorName(authorName);
-        Book book = new Book(title, genre, author);
-        bookRepo.save(book);
-        model.addAttribute(book);
+        bookService.addBook(title, genre, authorName);
+        Page<BookDTO> books = bookService.getBookPages(0, 5, "title");
+        model.addAttribute("books", books);
 
-        return "redirect:/books";
+        return "booksList.html";
     }
 
     @GetMapping("/{id}")
@@ -63,8 +57,7 @@ public class BookController {
             Model model
     ) {
         BookDTO bookDTO = bookService.findById(id);
-        String authorName = bookDTO.getAuthorName();
-
+        String authorName = bookDTO.getAuthorDTO().getAuthorName();
         Long authorId = authorService.findAuthorIdByName(authorName);
         TreeSet<String> authorSet = authorService.getAuthorsNames();
 
@@ -84,19 +77,9 @@ public class BookController {
             @PathVariable("id") long id,
             Model model
     ) {
-        Book updeateBook = bookRepo.findById(id);
-        if (title != null && !title.isEmpty()) {
-            updeateBook.setTitle(title);
-        }
-        if (genre != null && !genre.toString().isEmpty()) {
-            updeateBook.setGenre(genre);
-        }
-        if (authorName != null && !authorName.isEmpty()) {
-            updeateBook.setAuthor(authorRepo.findByAuthorName(authorName));
-        }
-        bookRepo.save(updeateBook);
 
-        List<Book> books = bookRepo.findAll();
+        bookService.updateBook(title,genre,authorName,id);
+        List<BookDTO> books = bookService.getAllBooks();
         model.addAttribute("books", books);
 
         return "redirect:/books/{id}";

@@ -17,7 +17,7 @@ public class BookDTOMapper  {
                 book.getId(),
                 book.getTitle(),
                 book.getGenre(),
-                authorDTOMapper.toDto(book.getAuthor()));
+                 authorDTOMapper.toDto(book.getAuthor()));
     }
     public Book toBook(BookDTO bookDTO){
         return new Book(

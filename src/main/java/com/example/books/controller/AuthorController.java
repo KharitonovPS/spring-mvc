@@ -1,26 +1,19 @@
 package com.example.books.controller;
 
-import com.example.books.domain.Author;
-import com.example.books.domain.Book;
 import com.example.books.domain.dto.AuthorDTO;
+import com.example.books.domain.dto.BookDTO;
 import com.example.books.service.AuthorService;
 import com.example.books.service.BookService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Set;
-
-import static com.example.books.util.DateParse.dateParse;
-import static com.example.books.util.DateParse.isDateParseable;
 
 @Controller
 @RequiredArgsConstructor
@@ -36,7 +29,7 @@ public class AuthorController {
             @RequestParam(value = "size", defaultValue = "5") int size,
             Model model) {
 
-        Page<AuthorDTO> authors = authorService.getAuthorPages(page, size);
+        Page<AuthorDTO> authors = authorService.getAuthorPages(page, size, "authorName");
 
         model.addAttribute("authors", authors);
         return "authorsList.html";
@@ -49,37 +42,34 @@ public class AuthorController {
             @RequestParam String biography,
             @RequestParam String date,
             Model model
-    ){
-        LocalDate localDate;
-        if (isDateParseable(date)) {
-            localDate = dateParse(date);
-            Author author = new Author(authorName, biography, localDate);
-            authorRepo.save(author);
-        }
-        Pageable pageable = PageRequest.of(0, 5, Sort.by("authorName"));
-        Page<Author> authors = authorRepo.findAll(pageable);
+    ) {
+        authorService.addAuthor(authorName, biography, date);
+        Page<AuthorDTO> authors = authorService
+                .getAuthorPages(0, 5, "authorName");
 
         model.addAttribute("authors", authors);
 
         return "authorsList.html";
     }
+
     @GetMapping("/{id}")
     public String getAuthorDetails(
             @PathVariable("id") long id,
             Model model
     ) {
-        Author author = authorRepo.findById(id);
-        String dateInView = author.getAuthorDateOfBirth()
+        AuthorDTO authorDTO = authorService.findAuthorById(id);
+        String dateInView = authorDTO.getAuthorDateOfBirth()
                 .format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
 
-        Set<Book> bookSet = bookRepo.findByAuthorId(id);
+        Set<BookDTO> bookSet = bookService.findByAuthorId(id);
 
-        model.addAttribute("author", author);
+        model.addAttribute("author", authorDTO);
         model.addAttribute("dateOfBirth", dateInView);
         model.addAttribute("bookSet", bookSet);
 
         return "authorDetails.html";
     }
+
     @SneakyThrows
     @PostMapping("/{id}")
     String replaceAuthor(
@@ -88,22 +78,11 @@ public class AuthorController {
             @RequestParam String date,
             @PathVariable long id,
             Model model
-    ){
-        Author updateAuthor = authorRepo.findById(id);
-        if (authorName != null && !authorName.isEmpty()){
-            updateAuthor.setAuthorName(authorName);
-        }
-        if (biography != null && !biography.isEmpty()){
-            updateAuthor.setBiography(biography);
-        }
-        LocalDate localDate;
-        if (isDateParseable(date)) {
-            localDate = dateParse(date);
-            updateAuthor.setAuthorDateOfBirth(localDate);
-        }
-        authorRepo.save(updateAuthor);
-        Pageable pageable = PageRequest.of(0, 5);
-        Page<Author> authors = authorRepo.findAll(pageable);
+    ) {
+
+        authorService.updateAuthor(id, authorName, biography, date);
+
+        List<AuthorDTO> authors = authorService.findAll();
 
         model.addAttribute("authors", authors);
 

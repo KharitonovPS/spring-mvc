@@ -34,6 +34,12 @@ public class Author implements Comparable<Author> {
         this.biography = biography;
         this.authorDateOfBirth = authorDateOfBirth;
     }
+    public Author(Long id, String authorName, String biography, LocalDate authorDateOfBirth) {
+        this.id = id;
+        this.authorName = authorName;
+        this.biography = biography;
+        this.authorDateOfBirth = authorDateOfBirth;
+    }
 
     @Override
     public int compareTo(Author author) {
