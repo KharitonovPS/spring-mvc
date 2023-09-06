@@ -80,6 +80,7 @@ public class AuthorController {
             Model model
     ) {
 
+
         authorService.updateAuthor(id, authorName, biography, date);
 
         List<AuthorDTO> authors = authorService.findAll();

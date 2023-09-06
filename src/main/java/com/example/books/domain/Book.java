@@ -15,10 +15,8 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-//    @NotBlank(message = "Title may not be blank!")
     private String title;
 
-//    @NotBlank(message = "Please choose 'Other' if you cant find exact genre")
     @Enumerated(EnumType.STRING)
     private BookGenre genre;
 
@@ -26,7 +24,7 @@ public class Book {
     @JoinColumn(name = "author_id")
     private Author author;
 
-    public String getAuthorName(){
+    public String getAuthorName() {
         return author != null ? author.getAuthorName() : "<none>";
     }
 

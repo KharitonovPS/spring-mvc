@@ -2,6 +2,7 @@ package com.example.books.service;
 
 import com.example.books.domain.Author;
 import com.example.books.domain.dto.AuthorDTO;
+import com.example.books.exceptions.ResourceNotFoundException;
 import com.example.books.repos.AuthorRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
@@ -47,15 +48,16 @@ public class AuthorService {
         LocalDate localDate;
         if (isDateParseable(date)) {
             localDate = dateParse(date);
-            Author author = new Author(authorName, biography, localDate);
-            authorRepo.save(author);
+            AuthorDTO authorDTO = new AuthorDTO(null, authorName, biography, localDate);
+            authorRepo.save(authorDTOMapper.toAuthor(authorDTO));
         }
     }
 
     public TreeSet<String> getAuthorsNames() {
         return authorRepo.findAll()
                 .stream()
-                .map((obj) -> Objects.toString(obj.getAuthorName()))
+                .map(authorDTOMapper::toDto)
+                .map(AuthorDTO::getAuthorName)
                 .collect(Collectors.toCollection(TreeSet::new));
     }
 
@@ -63,23 +65,32 @@ public class AuthorService {
         return authorRepo.findByAuthorName(authorName).getId();
     }
 
-    public AuthorDTO findAuthorById(long id){
+    public AuthorDTO findAuthorById(long id) {
         Author author = authorRepo.findById(id);
         return authorDTOMapper.toDto(author);
     }
 
     public void updateAuthor(long id, String authorName, String biography, String date) {
         Author updateAuthor = authorRepo.findById(id);
-        if (authorName != null && !authorName.isEmpty()) {
-            updateAuthor.setAuthorName(authorName);
-        }
-        if (biography != null && !biography.isEmpty()) {
-            updateAuthor.setBiography(biography);
+        if (updateAuthor == null) {
+            throw new ResourceNotFoundException("Can`t find author with current id");
         }
         LocalDate localDate;
         if (isDateParseable(date)) {
             localDate = dateParse(date);
-            updateAuthor.setAuthorDateOfBirth(localDate);
+        } else {
+            localDate = updateAuthor.getAuthorDateOfBirth();
+        }
+
+        AuthorDTO authorDTO = new AuthorDTO(null, authorName, biography, localDate);
+        if (authorDTO.getAuthorName() != null && !authorDTO.getAuthorName().isEmpty()) {
+            updateAuthor.setAuthorName(authorDTO.getAuthorName());
+        }
+        if (authorDTO.getBiography() != null && !authorDTO.getBiography().isEmpty()) {
+            updateAuthor.setBiography(authorDTO.getBiography());
+        }
+        if (authorDTO.getAuthorDateOfBirth() != updateAuthor.getAuthorDateOfBirth()) {
+            updateAuthor.setAuthorDateOfBirth(authorDTO.getAuthorDateOfBirth());
         }
         authorRepo.save(updateAuthor);
     }
@@ -91,7 +102,8 @@ public class AuthorService {
                 .collect(Collectors.toList());
     }
 
-    public Author findByAuthorName(String authorName) {
-        return authorRepo.findByAuthorName(authorName);
+    public AuthorDTO findByAuthorName(String authorName) {
+        return  authorDTOMapper.toDto( authorRepo.findByAuthorName(authorName))
+                ;
     }
 }

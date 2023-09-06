@@ -15,9 +15,11 @@ public class DateParse {
                 return false;
             }
             return true;
-        } return false;
+        }
+        return false;
     }
-    public static LocalDate dateParse(String date){
+
+    public static LocalDate dateParse(String date) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         return LocalDate.parse(date, formatter);
     }

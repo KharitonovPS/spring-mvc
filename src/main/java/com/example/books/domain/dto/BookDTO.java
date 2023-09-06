@@ -13,4 +13,10 @@ public class BookDTO{
     private String title;
     private BookGenre genre;
     private AuthorDTO authorDTO;
+
+    public BookDTO(String title, BookGenre genre, AuthorDTO authorDTO) {
+        this.title = title;
+        this.genre = genre;
+        this.authorDTO = authorDTO;
+    }
 }

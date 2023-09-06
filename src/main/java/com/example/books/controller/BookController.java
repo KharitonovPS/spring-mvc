@@ -1,6 +1,5 @@
 package com.example.books.controller;
 
-import com.example.books.domain.Book;
 import com.example.books.domain.BookGenre;
 import com.example.books.domain.dto.BookDTO;
 import com.example.books.service.AuthorService;

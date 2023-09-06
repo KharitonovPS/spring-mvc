@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.ToString;
 
 import java.time.LocalDate;
-import java.util.Set;
 
 @Getter
 @ToString
@@ -15,5 +14,7 @@ public class AuthorDTO {
     private String authorName;
     private String biography;
     private LocalDate authorDateOfBirth;
-//    private Set<BookDTO> bookDTOSet;
+
+    public AuthorDTO(String authorName, String biography, LocalDate localDate) {
+    }
 }

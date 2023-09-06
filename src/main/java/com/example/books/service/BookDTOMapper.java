@@ -2,13 +2,15 @@ package com.example.books.service;
 
 import com.example.books.domain.Book;
 import com.example.books.domain.dto.BookDTO;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+
 @Service
-public class BookDTOMapper  {
+public class BookDTOMapper {
 
     private final AuthorDTOMapper authorDTOMapper;
 
-    public BookDTOMapper(AuthorDTOMapper authorDTOMapper) {
+    public BookDTOMapper(@Lazy AuthorDTOMapper authorDTOMapper) {
         this.authorDTOMapper = authorDTOMapper;
     }
 
@@ -17,9 +19,10 @@ public class BookDTOMapper  {
                 book.getId(),
                 book.getTitle(),
                 book.getGenre(),
-                 authorDTOMapper.toDto(book.getAuthor()));
+                authorDTOMapper.toDto(book.getAuthor()));
     }
-    public Book toBook(BookDTO bookDTO){
+
+    public Book toBook(BookDTO bookDTO) {
         return new Book(
                 bookDTO.getId(),
                 bookDTO.getTitle(),

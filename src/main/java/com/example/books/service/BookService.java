@@ -4,12 +4,10 @@ import com.example.books.domain.Author;
 import com.example.books.domain.Book;
 import com.example.books.domain.BookGenre;
 import com.example.books.domain.dto.AuthorDTO;
-import com.example.books.exceptions.ResourceNotFoundException;
 import com.example.books.domain.dto.BookDTO;
+import com.example.books.exceptions.ResourceNotFoundException;
 import com.example.books.repos.BookRepo;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +22,7 @@ public class BookService {
     private final BookRepo bookRepo;
     private final BookDTOMapper bookDTOMapper;
     private final AuthorService authorService;
+    private final AuthorDTOMapper authorDTOMapper;
 
     public List<BookDTO> getAllBooks() {
         return bookRepo.findAll()
@@ -62,14 +61,23 @@ public class BookService {
     public void updateBook(String title, BookGenre bookGenre, String authorName, long id) {
 
         Book updeateBook = bookRepo.findById(id);
-        if (title != null && !title.isEmpty()) {
-            updeateBook.setTitle(title);
+        if (updeateBook == null) {
+            throw new ResourceNotFoundException("Can`t find book with current id");
         }
-        if (bookGenre != null && !bookGenre.toString().isEmpty()) {
-            updeateBook.setGenre(bookGenre);
+        BookDTO bookDTO = new BookDTO(null, title,
+                bookGenre,
+                authorService.findByAuthorName(authorName)
+        );
+        if (bookDTO.getTitle() != null && !bookDTO.getTitle().isEmpty()) {
+            updeateBook.setTitle(bookDTO.getTitle());
+        }
+        if (bookDTO.getGenre() != null && !bookDTO.getGenre().toString().isEmpty()) {
+            updeateBook.setGenre(bookDTO.getGenre());
         }
         if (authorName != null && !authorName.isEmpty()) {
-            updeateBook.setAuthor(authorService.findByAuthorName(authorName));
+            updeateBook.setAuthor(authorDTOMapper
+                    .toAuthor
+                    (bookDTO.getAuthorDTO()));
         }
         bookRepo.save(updeateBook);
     }
@@ -81,10 +89,13 @@ public class BookService {
                 .collect(Collectors.toSet());
     }
 
-    public void addBook (String title, BookGenre genre, String authorName){
-        Author author = authorService.findByAuthorName(authorName);
-        Book book = new Book(title, genre, author);
-        bookRepo.save(book);
+    public void addBook(String title, BookGenre genre, String authorName) {
+        BookDTO book = new BookDTO
+                (title,
+                        genre,
+                        authorService.findByAuthorName(authorName)
+                );
+        bookRepo.save(bookDTOMapper.toBook(book));
     }
 }
 

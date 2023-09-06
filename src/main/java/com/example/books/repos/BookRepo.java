@@ -11,5 +11,6 @@ public interface BookRepo extends JpaRepository<Book, Long> {
 
 
     Set<Book> findByAuthorId(long id);
+
     Book findById(long id);
 }
