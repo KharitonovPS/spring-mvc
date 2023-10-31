@@ -1,7 +1,3 @@
-# README.md for MVC Website 
-
-This is a sample README.md file for a Java Spring MVC web application project that uses the Controller-Service-DTO pattern, a PostgreSQL repository, Thymeleaf for rendering views, and Bootstrap CSS for styling.
-
 ## Project Overview
 
 This project is a web application for managing books and authors. It provides functionality to view, add, edit, and delete books and authors. The application follows the Model-View-Controller (MVC) architectural pattern, where:
